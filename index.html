@@ -79,13 +79,13 @@
                         </svg>
                         AI Project Generator
                     </h1>
-                    <p id="main-subtitle" class="text-orange-100">
+                    <p id="main-subtitle" class="text-gray-600">
                         Generate optimized documentation-driven prompts for Claude Code
                     </p>
                 </div>
                 <div class="language-switcher flex gap-2">
                     <button onclick="switchLanguage('en')"
-                            class="px-4 py-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-all flex items-center gap-2"
+                            class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all flex items-center gap-2"
                             id="lang-en">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
@@ -93,17 +93,17 @@
                         English
                     </button>
                     <button onclick="switchLanguage('zh-CN')"
-                            class="px-4 py-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-all flex items-center gap-2"
+                            class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all flex items-center gap-2"
                             id="lang-zh">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-2V2c0-.55-.45-1-1-1s-1 .45-1 1v2H8V2c0-.55-.45-1-1-1s-1 .45-1 1v2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H4V8h16v12z"/>
+                            <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-2V2c0-.55-.45-1-1-1s-1 .45-1 1v2H8V2c0-.55-.45-1-1-1s-1 .45-1 1v2H4c-1.1 0-2 .9-2 2 2h16c1.1 0 2-.9 2-2zm0 16H4V8h16v12z"/>
                         </svg>
                         简体中文
                     </button>
                 </div>
             </div>
             <!-- Progress Bar -->
-            <div class="mt-4 bg-white/10 rounded-full h-1">
+            <div class="mt-4 bg-gray-200 rounded-full h-1">
                 <div id="progress-bar" class="progress-bar w-0"></div>
             </div>
         </header>
@@ -152,7 +152,7 @@
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs text-blue-200 mb-1" data-i18n="currentVersion">Current Version</label>
-                                    <select id="currentVersion" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                    <select id="currentVersion" class="w-full p-2 rounded bg-white text-gray-800 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50">
                                         <option value="v1.0">v1.0</option>
                                         <option value="v1.1">v1.1</option>
                                         <option value="v1.2">v1.2</option>
@@ -161,12 +161,12 @@
                                 <div>
                                     <label class="block text-xs text-blue-200 mb-1" data-i18n="targetVersion">Target Version</label>
                                     <input type="text" id="targetVersion" value="v1.3"
-                                           class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                           class="w-full p-2 rounded bg-white text-gray-800 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50">
                                 </div>
                             </div>
                             <div class="mt-3">
                                 <label class="block text-xs text-blue-200 mb-1" data-i18n="changeType">Change Type</label>
-                                <select id="changeType" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                <select id="changeType" class="w-full p-2 rounded bg-white text-gray-800 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50">
                                     <option value="feature" data-i18n="featureAddition">Feature Addition</option>
                                     <option value="modification" data-i18n="featureModification">Feature Modification</option>
                                     <option value="architecture" data-i18n="architectureOptimization">Architecture Optimization</option>
@@ -183,7 +183,7 @@
                             <div class="grid grid-cols-1 gap-3">
                                 <div>
                                     <label class="block text-xs text-blue-200 mb-1" data-i18n="docLanguage">Documentation Language</label>
-                                    <select id="docLanguage" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                    <select id="docLanguage" class="w-full p-2 rounded bg-white text-gray-800 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50">
                                         <option value="en">English</option>
                                         <option value="zh-CN">简体中文</option>
                                         <option value="bilingual">Bilingual 双语</option>
@@ -191,7 +191,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs text-blue-200 mb-1" data-i18n="codeComments">Code Comments</label>
-                                    <select id="codeComments" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                    <select id="codeComments" class="w-full p-2 rounded bg-white text-gray-800 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50">
                                         <option value="en">English</option>
                                         <option value="zh-CN">简体中文</option>
                                         <option value="bilingual">Bilingual 双语</option>
@@ -209,12 +209,12 @@
                                 <input type="text" id="projectName"
                                        placeholder="Enter project name..."
                                        data-i18n-placeholder="projectNamePlaceholder"
-                                       class="w-full p-3 rounded-lg bg-white/20 text-white placeholder-blue-200 border border-white/30 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/50">
+                                       class="w-full p-3 rounded-lg bg-white text-gray-800 placeholder-gray-400 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50">
                                 <textarea id="projectDescription" rows="3"
                                           placeholder="Describe your project requirements and goals..."
                                           data-i18n-placeholder="projectDescPlaceholder"
-                                          class="w-full p-3 rounded-lg bg-white/20 text-white placeholder-blue-200 border border-white/30 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/50"></textarea>
-                                <select id="projectType" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                          class="w-full p-3 rounded-lg bg-white text-gray-800 placeholder-gray-400 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50"></textarea>
+                                <select id="projectType" class="w-full p-2 rounded bg-white text-gray-800 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50">
                                     <option value="web" data-i18n="webApp">Web Application</option>
                                     <option value="api" data-i18n="apiService">API Service</option>
                                     <option value="mobile" data-i18n="mobileApp">Mobile Application</option>
@@ -316,7 +316,7 @@
                             <div class="space-y-3">
                                 <div>
                                     <label class="block text-xs text-blue-200 mb-1" data-i18n="branchStrategy">Branching Strategy</label>
-                                    <select id="branchStrategy" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                    <select id="branchStrategy" class="w-full p-2 rounded bg-white text-gray-800 border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50">
                                         <option value="gitflow">GitFlow (main/develop/feature)</option>
                                         <option value="github">GitHub Flow (main/feature)</option>
                                         <option value="custom">Custom Strategy</option>
@@ -346,7 +346,7 @@
                         <!-- Generate Button -->
                         <button type="button" onclick="generatePrompt()"
                                 id="generate-btn"
-                                class="w-full py-4 bg-gradient-to-r from-orange-600 to-red-500 text-white rounded-lg font-semibold hover:from-orange-700 hover:to-red-600 transition-all transform hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" style="background: linear-gradient(90deg, #FF5722, #FF7043);"
+                                class="w-full py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M2.81 2.81L1.39 4.22l2.27 2.27C2.61 8.07 2 9.96 2 12c0 5.52 4.48 10 10 10 2.04 0 3.93-.61 5.51-1.66l2.27 2.27 1.41-1.41L2.81 2.81zM12 20c-4.41 0-8-3.59-8-8 0-1.48.41-2.86 1.12-4.06l10.94 10.94C14.86 19.59 13.48 20 12 20zM7.94 5.12L6.49 3.66C8.07 2.61 9.96 2 12 2c5.52 0 10 4.48 10 10 0 2.04-.61 3.93-1.66 5.51l-1.45-1.45C19.59 14.86 20 13.48 20 12c0-4.41-3.59-8-8-8-1.48 0-2.86.41-4.06 1.12z"/>
                             </svg>
@@ -392,23 +392,23 @@
                         </div>
                     </div>
 
-                    <div class="bg-black/30 rounded-lg p-4 h-96 overflow-y-auto relative">
-                        <pre id="prompt-preview" class="text-sm text-orange-50 whitespace-pre-wrap">
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 h-96 overflow-y-auto relative">
+                        <pre id="prompt-preview" class="text-sm text-gray-700 whitespace-pre-wrap">
 <!-- Generated prompt will appear here -->
 <!-- 生成的提示将在这里显示 -->
 Click "Generate Prompt" to see your customized Claude Code prompt
 点击"生成提示"查看您定制的Claude Code提示
                         </pre>
-                        <div id="loading-indicator" class="hidden absolute inset-0 flex items-center justify-center bg-black/70 rounded-lg">
-                            <div class="text-white text-center">
-                                <div class="animate-spin w-8 h-8 border-2 border-orange-300 border-t-transparent rounded-full mx-auto mb-2"></div>
+                        <div id="loading-indicator" class="hidden absolute inset-0 flex items-center justify-center bg-white/90 rounded-lg">
+                            <div class="text-gray-700 text-center">
+                                <div class="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
                                 <span data-i18n="generating">Generating...</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Stats Bar -->
-                    <div class="mt-4 flex justify-between text-sm text-orange-100">
+                    <div class="mt-4 flex justify-between text-sm text-gray-600">
                         <span data-i18n="characters">Characters: <span id="char-count">0</span></span>
                         <span data-i18n="estimatedTokens">Estimated Tokens: <span id="token-count">0</span></span>
                         <span data-i18n="qualityScore">Quality Score: <span id="quality-score">-</span>/100</span>
@@ -788,27 +788,69 @@ Click "Generate Prompt" to see your customized Claude Code prompt
             }
         }
 
+        // Simple translation function for common Chinese terms
+        function translateToEnglish(text) {
+            if (!text) return text;
+
+            const translations = {
+                '项目': 'Project',
+                '网站': 'Website',
+                '应用': 'Application',
+                '系统': 'System',
+                '平台': 'Platform',
+                '工具': 'Tool',
+                '管理': 'Management',
+                '用户': 'User',
+                '数据': 'Data',
+                '分析': 'Analysis',
+                '电商': 'E-commerce',
+                '博客': 'Blog',
+                '论坛': 'Forum',
+                '社交': 'Social',
+                '教育': 'Education',
+                '学习': 'Learning',
+                '游戏': 'Game',
+                '音乐': 'Music',
+                '视频': 'Video',
+                '图片': 'Image',
+                '文件': 'File',
+                '聊天': 'Chat',
+                '消息': 'Message',
+                '通知': 'Notification'
+            };
+
+            let result = text;
+            for (const [chinese, english] of Object.entries(translations)) {
+                result = result.replace(new RegExp(chinese, 'g'), english);
+            }
+            return result;
+        }
+
         function buildPrompt(config, lang) {
-            const isEn = lang === 'en';
+            // Always generate prompts in English for professional documentation
+            const isEn = true; // Force English output
             const isBilingual = config.docLanguage === 'bilingual';
 
-            let prompt = `# Claude Code ${isEn ? 'Documentation-Driven Project Development Request' : '文档驱动项目开发请求'}\n\n`;
+            let prompt = `# Claude Code Documentation-Driven Project Development Request\n\n`;
+
+            // Add note about English generation
+            prompt += `> **Note**: This prompt is optimized for English documentation generation to ensure professional, \n> standardized output regardless of interface language. All generated content will be in English.\n\n`;
 
             prompt += `## <project_context>\n`;
-            prompt += `**${isEn ? 'Project Mode' : '项目模式'}**: ${config.mode === 'new' ? (isEn ? 'New Project' : '新建项目') : (isEn ? 'Version Iteration' : '版本迭代')}\n`;
-            prompt += `**${isEn ? 'Project Name' : '项目名称'}**: ${config.name || (isEn ? 'My Project' : '我的项目')}\n`;
-            prompt += `**${isEn ? 'Project Type' : '项目类型'}**: ${config.type}\n`;
-            prompt += `**${isEn ? 'Documentation Language' : '文档语言'}**: ${config.docLanguage}\n`;
-            prompt += `**${isEn ? 'Code Comments Language' : '代码注释语言'}**: ${config.codeComments}\n`;
+            prompt += `**Project Mode**: ${config.mode === 'new' ? 'New Project' : 'Version Iteration'}\n`;
+            prompt += `**Project Name**: ${translateToEnglish(config.name) || 'My Project'}\n`;
+            prompt += `**Project Type**: ${config.type}\n`;
+            prompt += `**Documentation Language**: ${config.docLanguage}\n`;
+            prompt += `**Code Comments Language**: ${config.codeComments}\n`;
 
             if (config.mode === 'iteration') {
-                prompt += `**${isEn ? 'Current Version' : '当前版本'}**: ${config.currentVersion}\n`;
-                prompt += `**${isEn ? 'Target Version' : '目标版本'}**: ${config.targetVersion}\n`;
-                prompt += `**${isEn ? 'Change Type' : '变更类型'}**: ${config.changeType}\n`;
+                prompt += `**Current Version**: ${config.currentVersion}\n`;
+                prompt += `**Target Version**: ${config.targetVersion}\n`;
+                prompt += `**Change Type**: ${config.changeType}\n`;
             }
 
             if (config.description) {
-                prompt += `**${isEn ? 'Project Description' : '项目描述'}**: ${config.description}\n`;
+                prompt += `**Project Description**: ${translateToEnglish(config.description)}\n`;
             }
             prompt += `\n`;
 
