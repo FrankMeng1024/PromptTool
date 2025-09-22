@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en" id="app-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">AI Project Generator - Claude Code</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.300.0/lucide.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for better UX */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .language-badge {
+            @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-divider {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group label {
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-group label:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.5rem;
+            padding: 0.25rem;
+        }
+
+        .form-section {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+            min-width: 300px;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 min-h-screen">
+    <div id="app" class="container mx-auto px-4 py-8">
+        <!-- Language Switcher Header -->
+        <header class="mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 id="main-title" class="text-4xl font-bold text-white mb-2">
+                        🤖 AI Project Generator
+                    </h1>
+                    <p id="main-subtitle" class="text-blue-200">
+                        Generate optimized documentation-driven prompts for Claude Code
+                    </p>
+                </div>
+                <div class="language-switcher flex gap-2">
+                    <button onclick="switchLanguage('en')"
+                            class="px-4 py-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-all"
+                            id="lang-en">
+                        🇺🇸 English
+                    </button>
+                    <button onclick="switchLanguage('zh-CN')"
+                            class="px-4 py-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-all"
+                            id="lang-zh">
+                        🇨🇳 简体中文
+                    </button>
+                </div>
+            </div>
+            <!-- Progress Bar -->
+            <div class="mt-4 bg-white/10 rounded-full h-1">
+                <div id="progress-bar" class="progress-bar w-0"></div>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Configuration Panel (Left) -->
+            <div class="lg:col-span-1">
+                <div class="glass-effect rounded-xl p-6 text-white">
+                    <h2 id="config-title" class="text-xl font-semibold mb-6 flex items-center gap-2">
+                        ⚙️ <span data-i18n="configTitle">Project Configuration</span>
+                    </h2>
+
+                    <!-- Configuration Form -->
+                    <form id="project-form" class="space-y-6">
+                        <!-- Project Mode Section -->
+                        <div class="form-section">
+                            <label class="block text-sm font-medium mb-3 flex items-center gap-2">
+                                🚀 <span data-i18n="projectMode">Project Mode</span>
+                            </label>
+                            <div class="space-y-2">
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="radio" name="projectMode" value="new" checked
+                                           class="text-blue-500 focus:ring-blue-500">
+                                    <span data-i18n="newProject">New Project</span>
+                                    <span class="text-xs text-blue-300" data-i18n="newProjectDesc">(Generate complete documentation system)</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="radio" name="projectMode" value="iteration"
+                                           class="text-blue-500 focus:ring-blue-500">
+                                    <span data-i18n="versionIteration">Version Iteration</span>
+                                    <span class="text-xs text-blue-300" data-i18n="iterationDesc">(Generate new version based on existing docs)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Version Iteration Settings (Hidden by default) -->
+                        <div id="iteration-settings" class="form-section hidden">
+                            <label class="block text-sm font-medium mb-3 flex items-center gap-2">
+                                📊 <span data-i18n="versionSettings">Version Settings</span>
+                            </label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs text-blue-200 mb-1" data-i18n="currentVersion">Current Version</label>
+                                    <select id="currentVersion" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                        <option value="v1.0">v1.0</option>
+                                        <option value="v1.1">v1.1</option>
+                                        <option value="v1.2">v1.2</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-blue-200 mb-1" data-i18n="targetVersion">Target Version</label>
+                                    <input type="text" id="targetVersion" value="v1.3"
+                                           class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <label class="block text-xs text-blue-200 mb-1" data-i18n="changeType">Change Type</label>
+                                <select id="changeType" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                    <option value="feature" data-i18n="featureAddition">Feature Addition</option>
+                                    <option value="modification" data-i18n="featureModification">Feature Modification</option>
+                                    <option value="architecture" data-i18n="architectureOptimization">Architecture Optimization</option>
+                                    <option value="bugfix" data-i18n="bugFix">Bug Fix</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Language Settings -->
+                        <div class="form-section">
+                            <label class="block text-sm font-medium mb-3 flex items-center gap-2">
+                                🌐 <span data-i18n="languageSettings">Language Settings</span>
+                            </label>
+                            <div class="grid grid-cols-1 gap-3">
+                                <div>
+                                    <label class="block text-xs text-blue-200 mb-1" data-i18n="docLanguage">Documentation Language</label>
+                                    <select id="docLanguage" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                        <option value="en">English</option>
+                                        <option value="zh-CN">简体中文</option>
+                                        <option value="bilingual">Bilingual 双语</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-blue-200 mb-1" data-i18n="codeComments">Code Comments</label>
+                                    <select id="codeComments" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                        <option value="en">English</option>
+                                        <option value="zh-CN">简体中文</option>
+                                        <option value="bilingual">Bilingual 双语</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Project Information -->
+                        <div class="form-section">
+                            <label class="block text-sm font-medium mb-3 flex items-center gap-2">
+                                📝 <span data-i18n="projectInfo">Project Information</span>
+                            </label>
+                            <div class="space-y-3">
+                                <input type="text" id="projectName"
+                                       placeholder="Enter project name..."
+                                       data-i18n-placeholder="projectNamePlaceholder"
+                                       class="w-full p-3 rounded-lg bg-white/20 text-white placeholder-blue-200 border border-white/30 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/50">
+                                <textarea id="projectDescription" rows="3"
+                                          placeholder="Describe your project requirements and goals..."
+                                          data-i18n-placeholder="projectDescPlaceholder"
+                                          class="w-full p-3 rounded-lg bg-white/20 text-white placeholder-blue-200 border border-white/30 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/50"></textarea>
+                                <select id="projectType" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                    <option value="web" data-i18n="webApp">Web Application</option>
+                                    <option value="api" data-i18n="apiService">API Service</option>
+                                    <option value="mobile" data-i18n="mobileApp">Mobile Application</option>
+                                    <option value="desktop" data-i18n="desktopApp">Desktop Application</option>
+                                    <option value="library" data-i18n="library">Library/Framework</option>
+                                    <option value="microservice" data-i18n="microservice">Microservice</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Document Configuration -->
+                        <div class="form-section">
+                            <label class="block text-sm font-medium mb-3 flex items-center gap-2">
+                                📚 <span data-i18n="documentsConfig">Documents Configuration</span>
+                            </label>
+
+                            <!-- Core Documents -->
+                            <div class="mb-4">
+                                <h4 class="text-sm font-medium text-blue-200 mb-2" data-i18n="coreDocuments">Core Documents (Required)</h4>
+                                <div class="checkbox-group space-y-2">
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" checked disabled class="rounded text-blue-500">
+                                        <span class="text-sm">CLAUDE.md</span>
+                                        <span class="language-badge bg-green-500/20 text-green-300" data-i18n="required">Required</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="docs" value="prd" checked class="rounded text-blue-500">
+                                        <span class="text-sm">PRD.md</span>
+                                        <span class="language-badge bg-blue-500/20 text-blue-300" data-i18n="recommended">Recommended</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="docs" value="architecture" checked class="rounded text-blue-500">
+                                        <span class="text-sm">ARCHITECTURE.md</span>
+                                        <span class="language-badge bg-blue-500/20 text-blue-300" data-i18n="recommended">Recommended</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="docs" value="api" checked class="rounded text-blue-500">
+                                        <span class="text-sm">API.md</span>
+                                        <span class="language-badge bg-blue-500/20 text-blue-300" data-i18n="recommended">Recommended</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Professional Documents -->
+                            <div class="mb-4">
+                                <h4 class="text-sm font-medium text-blue-200 mb-2" data-i18n="professionalDocuments">Professional Documents (Optional)</h4>
+                                <div class="checkbox-group space-y-2">
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="docs" value="ux" class="rounded text-blue-500">
+                                        <span class="text-sm">UX.md</span>
+                                        <span class="language-badge bg-purple-500/20 text-purple-300" data-i18n="optional">Optional</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="docs" value="security" class="rounded text-blue-500">
+                                        <span class="text-sm">SECURITY.md</span>
+                                        <span class="language-badge bg-purple-500/20 text-purple-300" data-i18n="optional">Optional</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="docs" value="performance" class="rounded text-blue-500">
+                                        <span class="text-sm">PERFORMANCE.md</span>
+                                        <span class="language-badge bg-purple-500/20 text-purple-300" data-i18n="optional">Optional</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="docs" value="deployment" class="rounded text-blue-500">
+                                        <span class="text-sm">DEPLOYMENT.md</span>
+                                        <span class="language-badge bg-purple-500/20 text-purple-300" data-i18n="optional">Optional</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Workflow Documents -->
+                            <div>
+                                <h4 class="text-sm font-medium text-blue-200 mb-2" data-i18n="workflowDocuments">Workflow Documents (Recommended)</h4>
+                                <div class="checkbox-group space-y-2">
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="docs" value="testing" class="rounded text-blue-500">
+                                        <span class="text-sm">TESTING.md</span>
+                                        <span class="language-badge bg-orange-500/20 text-orange-300" data-i18n="workflow">Workflow</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="docs" value="development" class="rounded text-blue-500">
+                                        <span class="text-sm">DEVELOPMENT.md</span>
+                                        <span class="language-badge bg-orange-500/20 text-orange-300" data-i18n="workflow">Workflow</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="docs" value="review" class="rounded text-blue-500">
+                                        <span class="text-sm">REVIEW.md</span>
+                                        <span class="language-badge bg-orange-500/20 text-orange-300" data-i18n="workflow">Workflow</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Git & Automation Configuration -->
+                        <div class="form-section">
+                            <label class="block text-sm font-medium mb-3 flex items-center gap-2">
+                                🔧 <span data-i18n="automationConfig">Automation Configuration</span>
+                            </label>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs text-blue-200 mb-1" data-i18n="branchStrategy">Branching Strategy</label>
+                                    <select id="branchStrategy" class="w-full p-2 rounded bg-white/20 text-white border border-white/30">
+                                        <option value="gitflow">GitFlow (main/develop/feature)</option>
+                                        <option value="github">GitHub Flow (main/feature)</option>
+                                        <option value="custom">Custom Strategy</option>
+                                    </select>
+                                </div>
+                                <div class="checkbox-group space-y-2">
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="automation" value="hooks" checked class="rounded text-blue-500">
+                                        <span class="text-sm" data-i18n="claudeHooks">Claude Code Hooks</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="automation" value="cicd" checked class="rounded text-blue-500">
+                                        <span class="text-sm" data-i18n="cicdPipeline">CI/CD Pipeline</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="automation" value="testing" checked class="rounded text-blue-500">
+                                        <span class="text-sm" data-i18n="autoTesting">Automated Testing</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <input type="checkbox" name="automation" value="quality" checked class="rounded text-blue-500">
+                                        <span class="text-sm" data-i18n="qualityChecks">Quality Checks</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <button type="button" onclick="generatePrompt()"
+                                class="w-full py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 flex items-center justify-center gap-2">
+                            <span>🚀</span>
+                            <span data-i18n="generatePrompt">Generate Prompt</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Preview Panel (Middle & Right) -->
+            <div class="lg:col-span-2">
+                <div class="glass-effect rounded-xl p-6 text-white h-full">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 id="preview-title" class="text-xl font-semibold flex items-center gap-2">
+                            📋 <span data-i18n="previewTitle">Generated Prompt Preview</span>
+                        </h2>
+                        <div class="flex gap-2">
+                            <button onclick="copyPrompt()"
+                                    class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-all flex items-center gap-2">
+                                <span>📋</span>
+                                <span data-i18n="copyToClipboard">Copy to Clipboard</span>
+                            </button>
+                            <button onclick="downloadConfig()"
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all flex items-center gap-2">
+                                <span>💾</span>
+                                <span data-i18n="downloadConfig">Download Config</span>
+                            </button>
+                            <button onclick="generateProject()"
+                                    class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-all flex items-center gap-2">
+                                <span>🏗️</span>
+                                <span data-i18n="generateProject">Generate Project</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-black/30 rounded-lg p-4 h-96 overflow-y-auto relative">
+                        <pre id="prompt-preview" class="text-sm text-blue-100 whitespace-pre-wrap">
+<!-- Generated prompt will appear here -->
+<!-- 生成的提示将在这里显示 -->
+Click "Generate Prompt" to see your customized Claude Code prompt
+点击"生成提示"查看您定制的Claude Code提示
+                        </pre>
+                        <div id="loading-indicator" class="hidden absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
+                            <div class="text-white text-center">
+                                <div class="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+                                <span data-i18n="generating">Generating...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Bar -->
+                    <div class="mt-4 flex justify-between text-sm text-blue-200">
+                        <span data-i18n="characters">Characters: <span id="char-count">0</span></span>
+                        <span data-i18n="estimatedTokens">Estimated Tokens: <span id="token-count">0</span></span>
+                        <span data-i18n="qualityScore">Quality Score: <span id="quality-score">-</span>/100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let currentLang = 'en';
+        let projectConfig = {
+            mode: 'new',
+            name: '',
+            description: '',
+            type: 'web',
+            docLanguage: 'en',
+            codeComments: 'en',
+            selectedDocs: ['prd', 'architecture', 'api'],
+            branchStrategy: 'gitflow',
+            automation: ['hooks', 'cicd', 'testing', 'quality'],
+            currentVersion: 'v1.0',
+            targetVersion: 'v1.3',
+            changeType: 'feature'
+        };
+
+        // Internationalization
+        const i18n = {
+            en: {
+                ui: {
+                    title: "🤖 AI Project Generator",
+                    subtitle: "Generate optimized documentation-driven prompts for Claude Code",
+                    configTitle: "Project Configuration",
+                    projectMode: "Project Mode",
+                    newProject: "New Project",
+                    newProjectDesc: "(Generate complete documentation system)",
+                    versionIteration: "Version Iteration",
+                    iterationDesc: "(Generate new version based on existing docs)",
+                    versionSettings: "Version Settings",
+                    currentVersion: "Current Version",
+                    targetVersion: "Target Version",
+                    changeType: "Change Type",
+                    featureAddition: "Feature Addition",
+                    featureModification: "Feature Modification",
+                    architectureOptimization: "Architecture Optimization",
+                    bugFix: "Bug Fix",
+                    languageSettings: "Language Settings",
+                    docLanguage: "Documentation Language",
+                    codeComments: "Code Comments",
+                    projectInfo: "Project Information",
+                    projectNamePlaceholder: "Enter project name...",
+                    projectDescPlaceholder: "Describe your project requirements and goals...",
+                    webApp: "Web Application",
+                    apiService: "API Service",
+                    mobileApp: "Mobile Application",
+                    desktopApp: "Desktop Application",
+                    library: "Library/Framework",
+                    microservice: "Microservice",
+                    documentsConfig: "Documents Configuration",
+                    coreDocuments: "Core Documents (Required)",
+                    professionalDocuments: "Professional Documents (Optional)",
+                    workflowDocuments: "Workflow Documents (Recommended)",
+                    required: "Required",
+                    recommended: "Recommended",
+                    optional: "Optional",
+                    workflow: "Workflow",
+                    automationConfig: "Automation Configuration",
+                    branchStrategy: "Branching Strategy",
+                    claudeHooks: "Claude Code Hooks",
+                    cicdPipeline: "CI/CD Pipeline",
+                    autoTesting: "Automated Testing",
+                    qualityChecks: "Quality Checks",
+                    generatePrompt: "Generate Prompt",
+                    previewTitle: "Generated Prompt Preview",
+                    copyToClipboard: "Copy to Clipboard",
+                    downloadConfig: "Download Config",
+                    generateProject: "Generate Project",
+                    generating: "Generating...",
+                    characters: "Characters:",
+                    estimatedTokens: "Estimated Tokens:",
+                    qualityScore: "Quality Score:",
+                    copied: "Copied to clipboard!",
+                    downloadSuccess: "Configuration downloaded successfully!"
+                }
+            },
+            'zh-CN': {
+                ui: {
+                    title: "🤖 AI项目生成器",
+                    subtitle: "为Claude Code生成优化的文档驱动项目开发提示",
+                    configTitle: "项目配置",
+                    projectMode: "项目模式",
+                    newProject: "新建项目",
+                    newProjectDesc: "(生成完整文档体系)",
+                    versionIteration: "版本迭代",
+                    iterationDesc: "(基于现有文档生成新版本)",
+                    versionSettings: "版本设置",
+                    currentVersion: "当前版本",
+                    targetVersion: "目标版本",
+                    changeType: "变更类型",
+                    featureAddition: "功能增加",
+                    featureModification: "功能修改",
+                    architectureOptimization: "架构优化",
+                    bugFix: "错误修复",
+                    languageSettings: "语言设置",
+                    docLanguage: "文档语言",
+                    codeComments: "代码注释",
+                    projectInfo: "项目信息",
+                    projectNamePlaceholder: "请输入项目名称...",
+                    projectDescPlaceholder: "请描述您的项目需求和目标...",
+                    webApp: "Web应用程序",
+                    apiService: "API服务",
+                    mobileApp: "移动应用程序",
+                    desktopApp: "桌面应用程序",
+                    library: "库/框架",
+                    microservice: "微服务",
+                    documentsConfig: "文档配置",
+                    coreDocuments: "核心文档（必需）",
+                    professionalDocuments: "专业文档（可选）",
+                    workflowDocuments: "工作流文档（推荐）",
+                    required: "必需",
+                    recommended: "推荐",
+                    optional: "可选",
+                    workflow: "工作流",
+                    automationConfig: "自动化配置",
+                    branchStrategy: "分支策略",
+                    claudeHooks: "Claude Code钩子",
+                    cicdPipeline: "CI/CD流水线",
+                    autoTesting: "自动化测试",
+                    qualityChecks: "质量检查",
+                    generatePrompt: "生成提示",
+                    previewTitle: "生成的提示预览",
+                    copyToClipboard: "复制到剪贴板",
+                    downloadConfig: "下载配置",
+                    generateProject: "生成项目",
+                    generating: "正在生成...",
+                    characters: "字符数:",
+                    estimatedTokens: "估计令牌数:",
+                    qualityScore: "质量评分:",
+                    copied: "已复制到剪贴板！",
+                    downloadSuccess: "配置下载成功！"
+                }
+            }
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            currentLang = detectLanguage();
+            switchLanguage(currentLang);
+            bindEvents();
+            updatePreview();
+        });
+
+        // Language detection and switching
+        function detectLanguage() {
+            const browserLang = navigator.language || navigator.userLanguage;
+            return browserLang.startsWith('zh') ? 'zh-CN' : 'en';
+        }
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            updateLanguageUI();
+            updateTexts();
+            updatePreview();
+        }
+
+        function updateLanguageUI() {
+            // Update active language button
+            document.querySelectorAll('.language-switcher button').forEach(btn => {
+                btn.classList.remove('bg-white/40');
+                btn.classList.add('bg-white/20');
+            });
+
+            const activeBtn = currentLang === 'en' ? document.getElementById('lang-en') : document.getElementById('lang-zh');
+            activeBtn.classList.remove('bg-white/20');
+            activeBtn.classList.add('bg-white/40');
+        }
+
+        function updateTexts() {
+            const texts = i18n[currentLang]?.ui || i18n['en'].ui;
+
+            // Update main titles
+            document.getElementById('main-title').textContent = texts.title;
+            document.getElementById('main-subtitle').textContent = texts.subtitle;
+
+            // Update form labels using data-i18n attributes
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (texts[key]) {
+                    el.textContent = texts[key];
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (texts[key]) {
+                    el.placeholder = texts[key];
+                }
+            });
+
+            // Update select options
+            updateSelectOptions();
+        }
+
+        function updateSelectOptions() {
+            const texts = i18n[currentLang]?.ui || i18n['en'].ui;
+
+            // Update project type options
+            const projectTypeSelect = document.getElementById('projectType');
+            const options = projectTypeSelect.querySelectorAll('option');
+            options.forEach(option => {
+                const key = option.getAttribute('data-i18n');
+                if (key && texts[key]) {
+                    option.textContent = texts[key];
+                }
+            });
+
+            // Update change type options
+            const changeTypeSelect = document.getElementById('changeType');
+            changeTypeSelect.querySelectorAll('option').forEach(option => {
+                const key = option.getAttribute('data-i18n');
+                if (key && texts[key]) {
+                    option.textContent = texts[key];
+                }
+            });
+        }
+
+        // Event bindings
+        function bindEvents() {
+            // Form change listeners
+            document.getElementById('project-form').addEventListener('change', updateConfig);
+            document.getElementById('projectName').addEventListener('input', updateConfig);
+            document.getElementById('projectDescription').addEventListener('input', updateConfig);
+
+            // Project mode change listener
+            document.querySelectorAll('input[name="projectMode"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const iterationSettings = document.getElementById('iteration-settings');
+                    if (this.value === 'iteration') {
+                        iterationSettings.classList.remove('hidden');
+                    } else {
+                        iterationSettings.classList.add('hidden');
+                    }
+                    updateConfig();
+                });
+            });
+
+            // Auto-save configuration
+            setInterval(autoSave, 5000); // Auto-save every 5 seconds
+        }
+
+        function updateConfig() {
+            // Update project configuration from form
+            const form = document.getElementById('project-form');
+            const formData = new FormData(form);
+
+            projectConfig = {
+                mode: formData.get('projectMode') || 'new',
+                name: document.getElementById('projectName').value,
+                description: document.getElementById('projectDescription').value,
+                type: document.getElementById('projectType').value,
+                docLanguage: document.getElementById('docLanguage').value,
+                codeComments: document.getElementById('codeComments').value,
+                selectedDocs: Array.from(document.querySelectorAll('input[name="docs"]:checked')).map(cb => cb.value),
+                branchStrategy: document.getElementById('branchStrategy').value,
+                automation: Array.from(document.querySelectorAll('input[name="automation"]:checked')).map(cb => cb.value),
+                currentVersion: document.getElementById('currentVersion').value,
+                targetVersion: document.getElementById('targetVersion').value,
+                changeType: document.getElementById('changeType').value
+            };
+
+            updateProgressBar();
+            updatePreview();
+        }
+
+        function updateProgressBar() {
+            let progress = 0;
+            const maxProgress = 100;
+
+            // Calculate progress based on filled fields
+            if (projectConfig.name) progress += 20;
+            if (projectConfig.description && projectConfig.description.length > 20) progress += 20;
+            if (projectConfig.selectedDocs.length > 0) progress += 30;
+            if (projectConfig.docLanguage) progress += 10;
+            if (projectConfig.automation.length > 0) progress += 20;
+
+            document.getElementById('progress-bar').style.width = `${Math.min(progress, maxProgress)}%`;
+        }
+
+        // Prompt generation
+        function generatePrompt() {
+            showLoading(true);
+
+            // Simulate generation delay for better UX
+            setTimeout(() => {
+                const prompt = buildPrompt(projectConfig, currentLang);
+                document.getElementById('prompt-preview').textContent = prompt;
+                updateStats(prompt);
+                showLoading(false);
+
+                // Show success notification
+                showNotification(i18n[currentLang].ui.copied, 'success');
+            }, 1000);
+        }
+
+        function buildPrompt(config, lang) {
+            const isEn = lang === 'en';
+            const isBilingual = config.docLanguage === 'bilingual';
+
+            let prompt = `# Claude Code ${isEn ? 'Documentation-Driven Project Development Request' : '文档驱动项目开发请求'}\n\n`;
+
+            prompt += `## <project_context>\n`;
+            prompt += `**${isEn ? 'Project Mode' : '项目模式'}**: ${config.mode === 'new' ? (isEn ? 'New Project' : '新建项目') : (isEn ? 'Version Iteration' : '版本迭代')}\n`;
+            prompt += `**${isEn ? 'Project Name' : '项目名称'}**: ${config.name || (isEn ? 'My Project' : '我的项目')}\n`;
+            prompt += `**${isEn ? 'Project Type' : '项目类型'}**: ${config.type}\n`;
+            prompt += `**${isEn ? 'Documentation Language' : '文档语言'}**: ${config.docLanguage}\n`;
+            prompt += `**${isEn ? 'Code Comments Language' : '代码注释语言'}**: ${config.codeComments}\n`;
+
+            if (config.mode === 'iteration') {
+                prompt += `**${isEn ? 'Current Version' : '当前版本'}**: ${config.currentVersion}\n`;
+                prompt += `**${isEn ? 'Target Version' : '目标版本'}**: ${config.targetVersion}\n`;
+                prompt += `**${isEn ? 'Change Type' : '变更类型'}**: ${config.changeType}\n`;
+            }
+
+            if (config.description) {
+                prompt += `**${isEn ? 'Project Description' : '项目描述'}**: ${config.description}\n`;
+            }
+            prompt += `\n`;
+
+            if (isBilingual) {
+                prompt += `## <multi_language_requirements>\n`;
+                prompt += `- Generate bilingual documentation (English + Simplified Chinese)\n`;
+                prompt += `- 生成双语文档（英文 + 简体中文）\n`;
+                prompt += `- Use consistent terminology across languages 跨语言使用一致的术语\n`;
+                prompt += `- Include language switching capabilities 包含语言切换功能\n\n`;
+            }
+
+            prompt += `## <documentation_requirements>\n`;
+            prompt += `### ${isEn ? 'Core Documents (Required)' : '核心文档（必需）'}\n`;
+            prompt += `1. **CLAUDE.md**: ${isEn ? 'Complete project configuration and development guide' : '完整的项目配置和开发指南'}\n`;
+            prompt += `   - ${isEn ? 'Project overview and tech stack' : '项目概述和技术栈'}\n`;
+            prompt += `   - ${isEn ? 'Development workflow and code standards' : '开发工作流和代码标准'}\n`;
+            prompt += `   - ${isEn ? 'Claude Code usage guide' : 'Claude Code使用指南'}\n`;
+            prompt += `   - ${isEn ? 'Documentation update standards' : '文档更新规范'}\n\n`;
+
+            if (config.selectedDocs.includes('prd')) {
+                prompt += `2. **PRD.md**: ${isEn ? 'Product requirements document' : '产品需求文档'}\n`;
+                prompt += `   - ${isEn ? 'Feature specifications' : '功能规格说明'}\n`;
+                prompt += `   - ${isEn ? 'User stories and acceptance criteria' : '用户故事和验收标准'}\n`;
+                prompt += `   - ${isEn ? 'Priority and milestone planning' : '优先级和里程碑规划'}\n\n`;
+            }
+
+            if (config.selectedDocs.includes('architecture')) {
+                prompt += `3. **ARCHITECTURE.md**: ${isEn ? 'System architecture document' : '系统架构文档'}\n`;
+                prompt += `   - ${isEn ? 'Overall architecture design' : '整体架构设计'}\n`;
+                prompt += `   - ${isEn ? 'Technology selection explanation' : '技术选型说明'}\n`;
+                prompt += `   - ${isEn ? 'Data flow and interface design' : '数据流和接口设计'}\n\n`;
+            }
+
+            if (config.selectedDocs.includes('api')) {
+                prompt += `4. **API.md**: ${isEn ? 'Interface specification document' : '接口规范文档'}\n`;
+                prompt += `   - ${isEn ? 'RESTful API specifications' : 'RESTful API规范'}\n`;
+                prompt += `   - ${isEn ? 'Data model definitions' : '数据模型定义'}\n`;
+                prompt += `   - ${isEn ? 'Error handling standards' : '错误处理标准'}\n\n`;
+            }
+
+            // Add additional documents
+            const additionalDocs = config.selectedDocs.filter(doc => !['prd', 'architecture', 'api'].includes(doc));
+            if (additionalDocs.length > 0) {
+                prompt += `### ${isEn ? 'Additional Documents' : '附加文档'}\n`;
+                additionalDocs.forEach((doc, index) => {
+                    const docNames = {
+                        ux: 'UX.md',
+                        security: 'SECURITY.md',
+                        performance: 'PERFORMANCE.md',
+                        deployment: 'DEPLOYMENT.md',
+                        testing: 'TESTING.md',
+                        development: 'DEVELOPMENT.md',
+                        review: 'REVIEW.md'
+                    };
+                    prompt += `${index + 5}. **${docNames[doc]}**: ${isEn ? 'Specialized documentation' : '专业文档'}\n`;
+                });
+                prompt += `\n`;
+            }
+
+            prompt += `## <automation_configuration>\n`;
+            prompt += `### ${isEn ? 'Version Control Integration' : '版本控制集成'}\n`;
+            prompt += `- **${isEn ? 'Branching Strategy' : '分支策略'}**: ${config.branchStrategy}\n`;
+
+            if (config.automation.includes('hooks')) {
+                prompt += `- **Claude Code Hooks**: ${isEn ? 'Automated quality checks and workflows' : '自动化质量检查和工作流'}\n`;
+            }
+
+            if (config.automation.includes('cicd')) {
+                prompt += `- **CI/CD Pipeline**: ${isEn ? 'Continuous integration and deployment' : '持续集成和部署'}\n`;
+            }
+
+            if (config.automation.includes('testing')) {
+                prompt += `- **${isEn ? 'Automated Testing' : '自动化测试'}**: ${isEn ? 'Unit, integration, and E2E tests' : '单元、集成和端到端测试'}\n`;
+            }
+
+            if (config.automation.includes('quality')) {
+                prompt += `- **${isEn ? 'Quality Checks' : '质量检查'}**: ${isEn ? 'Code analysis and documentation sync' : '代码分析和文档同步'}\n`;
+            }
+
+            prompt += `\n`;
+
+            if (config.mode === 'iteration') {
+                prompt += `## <version_iteration>\n`;
+                prompt += `${isEn ? 'Please perform incremental development based on version differences:' : '请基于版本差异进行增量开发：'}\n`;
+                prompt += `1. ${isEn ? `Analyze differences between ${config.currentVersion} and ${config.targetVersion}` : `分析${config.currentVersion}和${config.targetVersion}的差异`}\n`;
+                prompt += `2. ${isEn ? 'Update related code files' : '更新相关代码文件'}\n`;
+                prompt += `3. ${isEn ? 'Add/update test cases' : '添加/更新测试用例'}\n`;
+                prompt += `4. ${isEn ? 'Update documentation versions' : '更新文档版本'}\n`;
+                prompt += `5. ${isEn ? 'Generate change report' : '生成变更报告'}\n\n`;
+            } else {
+                prompt += `## <project_generation>\n`;
+                prompt += `${isEn ? 'Please generate a complete project structure including:' : '请生成完整的项目结构，包括：'}\n`;
+                prompt += `1. ${isEn ? 'Complete source code implementation' : '完整的源代码实现'}\n`;
+                prompt += `2. ${isEn ? 'Versioned documentation system (docs/versions/v1.0/)' : '版本化文档体系 (docs/versions/v1.0/)'}\n`;
+                prompt += `3. ${isEn ? 'Testing framework and sample tests' : '测试框架和示例测试'}\n`;
+                prompt += `4. ${isEn ? 'CI/CD configuration files' : 'CI/CD配置文件'}\n`;
+                prompt += `5. ${isEn ? 'Development environment configuration' : '开发环境配置'}\n`;
+                prompt += `6. ${isEn ? 'Claude Code integration setup' : 'Claude Code集成设置'}\n\n`;
+            }
+
+            prompt += `## <quality_standards>\n`;
+            prompt += `### ${isEn ? 'Code Quality Requirements' : '代码质量要求'}\n`;
+            prompt += `- **${isEn ? 'Type Safety' : '类型安全'}**: ${isEn ? 'Use TypeScript for type safety' : '使用TypeScript确保类型安全'}\n`;
+            prompt += `- **${isEn ? 'Code Standards' : '代码规范'}**: ${isEn ? 'Follow ESLint and Prettier standards' : '遵循ESLint和Prettier规范'}\n`;
+            prompt += `- **${isEn ? 'Test Coverage' : '测试覆盖'}**: ${isEn ? 'Unit test coverage ≥80%' : '单元测试覆盖率≥80%'}\n`;
+            prompt += `- **${isEn ? 'Documentation Sync' : '文档同步'}**: ${isEn ? 'Code changes must sync documentation updates' : '代码变更必须同步更新文档'}\n\n`;
+
+            prompt += `### ${isEn ? 'Documentation Quality Requirements' : '文档质量要求'}\n`;
+            prompt += `- **${isEn ? 'Complete Structure' : '结构完整'}**: ${isEn ? 'All documents include complete chapter structure' : '所有文档包含完整的章节结构'}\n`;
+            prompt += `- **${isEn ? 'Professional Content' : '内容专业'}**: ${isEn ? 'Accurate technical descriptions, clear user stories' : '技术描述准确，用户故事清晰'}\n`;
+            prompt += `- **${isEn ? 'Version Consistency' : '版本一致'}**: ${isEn ? 'Documentation versions stay synchronized with code versions' : '文档版本与代码版本保持同步'}\n`;
+            prompt += `- **${isEn ? 'Executability' : '可执行性'}**: ${isEn ? 'All workflows can be directly executed' : '所有工作流程可直接执行'}\n\n`;
+
+            if (isBilingual) {
+                prompt += `### ${isEn ? 'Multi-language Quality Standards' : '多语言质量标准'}\n`;
+                prompt += `- **${isEn ? 'Translation Accuracy' : '翻译准确性'}**: ${isEn ? 'Technical terms consistently translated' : '技术术语一致翻译'}\n`;
+                prompt += `- **${isEn ? 'Cultural Adaptation' : '文化适应'}**: ${isEn ? 'Content adapted for target language culture' : '内容适应目标语言文化'}\n`;
+                prompt += `- **${isEn ? 'Consistency' : '一致性'}**: ${isEn ? 'Terminology consistent across all documents' : '术语在所有文档中保持一致'}\n`;
+                prompt += `- **${isEn ? 'Completeness' : '完整性'}**: ${isEn ? 'All selected languages have complete documentation' : '所有选择的语言都有完整文档'}\n\n`;
+            }
+
+            prompt += `## <success_criteria>\n`;
+            prompt += `### ${isEn ? 'Project Delivery Standards' : '项目交付标准'}\n`;
+            prompt += `- [x] ${isEn ? 'Code runs directly, passes all tests' : '代码可直接运行，通过所有测试'}\n`;
+            prompt += `- [x] ${isEn ? 'Complete documentation system, supports version management' : '文档体系完整，支持版本化管理'}\n`;
+            prompt += `- [x] ${isEn ? 'Git workflow configured, supports automation' : 'Git工作流配置完成，支持自动化'}\n`;
+            prompt += `- [x] ${isEn ? 'Claude Code integration configured, supports incremental development' : 'Claude Code集成配置，支持增量开发'}\n`;
+            prompt += `- [x] ${isEn ? 'CI/CD pipeline ready, supports continuous integration' : 'CI/CD流程就绪，支持持续集成'}\n`;
+
+            if (isBilingual) {
+                prompt += `- [x] ${isEn ? 'Multi-language support implemented' : '多语言支持已实现'}\n`;
+            }
+
+            prompt += `\n${isEn ? 'Please generate a complete, production-ready project based on these requirements with excellent maintainability, Claude Code integration capabilities, and comprehensive documentation system.' : '请基于这些要求生成完整的、生产就绪的项目，确保项目具备优秀的可维护性、Claude Code集成能力和全面的文档体系。'}`;
+
+            return prompt;
+        }
+
+        function updatePreview() {
+            // Auto-update preview as user types (debounced)
+            clearTimeout(window.previewTimeout);
+            window.previewTimeout = setTimeout(() => {
+                if (projectConfig.name || projectConfig.description || projectConfig.selectedDocs.length > 0) {
+                    generatePrompt();
+                }
+            }, 500);
+        }
+
+        function updateStats(text) {
+            const charCount = text.length;
+            const tokenCount = Math.ceil(charCount / 4); // Rough estimate
+            const qualityScore = calculateQualityScore(projectConfig);
+
+            document.getElementById('char-count').textContent = charCount.toLocaleString();
+            document.getElementById('token-count').textContent = tokenCount.toLocaleString();
+            document.getElementById('quality-score').textContent = qualityScore;
+        }
+
+        function calculateQualityScore(config) {
+            let score = 60; // Base score
+
+            if (config.name && config.name.length > 3) score += 10;
+            if (config.description && config.description.length > 50) score += 15;
+            if (config.selectedDocs.length >= 3) score += 10;
+            if (config.selectedDocs.length >= 5) score += 5;
+            if (config.docLanguage === 'bilingual') score += 5;
+            if (config.automation.length >= 3) score += 5;
+
+            return Math.min(score, 100);
+        }
+
+        function showLoading(show) {
+            const indicator = document.getElementById('loading-indicator');
+            if (show) {
+                indicator.classList.remove('hidden');
+            } else {
+                indicator.classList.add('hidden');
+            }
+        }
+
+        // Utility functions
+        function copyPrompt() {
+            const prompt = document.getElementById('prompt-preview').textContent;
+            navigator.clipboard.writeText(prompt).then(() => {
+                showNotification(i18n[currentLang].ui.copied, 'success');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = prompt;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification(i18n[currentLang].ui.copied, 'success');
+            });
+        }
+
+        function downloadConfig() {
+            const config = {
+                ...projectConfig,
+                language: currentLang,
+                timestamp: new Date().toISOString(),
+                version: '1.0.0'
+            };
+
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${(config.name || 'project').replace(/\s+/g, '-').toLowerCase()}-config.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            showNotification(i18n[currentLang].ui.downloadSuccess, 'success');
+        }
+
+        function generateProject() {
+            const prompt = document.getElementById('prompt-preview').textContent;
+            if (!prompt || prompt.includes('Click "Generate Prompt"')) {
+                showNotification(currentLang === 'en' ? 'Please generate a prompt first!' : '请先生成提示！', 'error');
+                return;
+            }
+
+            // Copy prompt and show instructions
+            copyPrompt();
+            showNotification(
+                currentLang === 'en'
+                    ? 'Prompt copied! Paste it into Claude Code to generate your project.'
+                    : '提示已复制！请粘贴到Claude Code中生成您的项目。',
+                'info'
+            );
+        }
+
+        function autoSave() {
+            const config = {
+                ...projectConfig,
+                language: currentLang,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('claudeProjectConfig', JSON.stringify(config));
+        }
+
+        function loadSavedConfig() {
+            const saved = localStorage.getItem('claudeProjectConfig');
+            if (saved) {
+                try {
+                    const config = JSON.parse(saved);
+                    projectConfig = { ...projectConfig, ...config };
+                    // Restore form values
+                    restoreFormValues();
+                } catch (e) {
+                    console.warn('Failed to load saved configuration:', e);
+                }
+            }
+        }
+
+        function restoreFormValues() {
+            // Restore form values from projectConfig
+            document.getElementById('projectName').value = projectConfig.name || '';
+            document.getElementById('projectDescription').value = projectConfig.description || '';
+            document.getElementById('projectType').value = projectConfig.type || 'web';
+            document.getElementById('docLanguage').value = projectConfig.docLanguage || 'en';
+            document.getElementById('codeComments').value = projectConfig.codeComments || 'en';
+
+            // Restore checkboxes
+            projectConfig.selectedDocs.forEach(doc => {
+                const checkbox = document.querySelector(`input[name="docs"][value="${doc}"]`);
+                if (checkbox) checkbox.checked = true;
+            });
+
+            projectConfig.automation.forEach(auto => {
+                const checkbox = document.querySelector(`input[name="automation"][value="${auto}"]`);
+                if (checkbox) checkbox.checked = true;
+            });
+        }
+
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            document.querySelectorAll('.notification').forEach(n => n.remove());
+
+            // Create and show notification
+            const notification = document.createElement('div');
+            notification.className = `notification px-6 py-3 rounded-lg text-white z-50 fade-in ${
+                type === 'success' ? 'bg-green-500' :
+                type === 'error' ? 'bg-red-500' :
+                'bg-blue-500'
+            }`;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Load saved configuration on startup
+        loadSavedConfig();
+
+        // Initialize preview on load
+        updatePreview();
+    </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+# Claude Code Hooks Configuration
+# Claude Code钩子配置
+
+[[hooks]]
+event = "PreToolUse"
+[hooks.matcher]
+tool_name = "git_commit"
+command = """
+echo "🔍 Running automated quality checks... 正在运行自动化质量检查..."
+
+# 1. Check if required files exist 检查必需文件是否存在
+if [ ! -f "package.json" ] && [ ! -f "requirements.txt" ] && [ ! -f "Cargo.toml" ]; then
+    echo "ℹ️  No package manager files found, skipping dependency checks"
+    echo "ℹ️  未找到包管理器文件，跳过依赖检查"
+else
+    echo "✅ Package configuration files found 找到包配置文件"
+fi
+
+# 2. Run test suite if available 运行测试套件（如果可用）
+if [ -f "package.json" ]; then
+    if npm list --depth=0 2>/dev/null | grep -q "jest\|vitest\|mocha"; then
+        echo "🧪 Running tests... 运行测试..."
+        npm test || (echo "❌ Tests failed 测试失败" && exit 1)
+    else
+        echo "ℹ️  No test framework detected, skipping tests"
+    fi
+elif [ -f "requirements.txt" ]; then
+    if [ -f "pytest.ini" ] || [ -f "setup.cfg" ] || find . -name "test_*.py" -o -name "*_test.py" | head -1 | grep -q .; then
+        echo "🧪 Running Python tests... 运行Python测试..."
+        python -m pytest || (echo "❌ Tests failed 测试失败" && exit 1)
+    else
+        echo "ℹ️  No Python tests detected, skipping tests"
+    fi
+fi
+
+# 3. Code quality check 代码质量检查
+if [ -f "package.json" ]; then
+    if npm list --depth=0 2>/dev/null | grep -q "eslint"; then
+        echo "🔍 Running ESLint... 运行ESLint..."
+        npm run lint || echo "⚠️  Linting issues found (non-blocking) 发现代码风格问题（非阻塞）"
+    fi
+
+    if npm list --depth=0 2>/dev/null | grep -q "typescript"; then
+        echo "🔍 Running TypeScript checks... 运行TypeScript检查..."
+        npx tsc --noEmit || echo "⚠️  Type check issues found (non-blocking) 发现类型检查问题（非阻塞）"
+    fi
+fi
+
+# 4. Documentation consistency validation 文档一致性验证
+if [ -f "scripts/validate-docs.sh" ]; then
+    echo "📚 Validating documentation... 验证文档..."
+    bash scripts/validate-docs.sh || echo "⚠️  Documentation validation warnings 文档验证警告"
+fi
+
+# 5. Security scan 安全扫描
+if [ -f "package.json" ]; then
+    echo "🔒 Running security audit... 运行安全审计..."
+    npm audit --audit-level=high || echo "⚠️  Security audit warnings 安全审计警告"
+fi
+
+echo "✅ Quality checks completed 质量检查完成"
+"""
+
+[[hooks]]
+event = "PostToolUse"
+[hooks.matcher]
+tool_name = "git_commit"
+command = """
+echo "🚀 Post-commit automation... 提交后自动化..."
+
+# Get commit message for notifications 获取提交信息用于通知
+COMMIT_MSG=$(git log -1 --pretty=%B)
+
+# Trigger CI/CD pipeline if available 触发CI/CD流水线（如果可用）
+if command -v gh >/dev/null 2>&1; then
+    echo "🔄 Checking for GitHub Actions workflows... 检查GitHub Actions工作流..."
+    if [ -f ".github/workflows/ci.yml" ]; then
+        echo "🚀 CI/CD pipeline will be triggered automatically"
+        echo "🚀 CI/CD流水线将自动触发"
+    fi
+fi
+
+# Update documentation versions if needed 如果需要，更新文档版本
+if [ -f "scripts/update-doc-versions.sh" ]; then
+    echo "📚 Updating documentation versions... 更新文档版本..."
+    bash scripts/update-doc-versions.sh
+fi
+
+echo "✅ Post-commit automation completed 提交后自动化完成"
+"""
+
+[[hooks]]
+event = "PreToolUse"
+[hooks.matcher]
+tool_name = "Edit"
+command = """
+echo "📝 Pre-edit validation... 编辑前验证..."
+
+# Check if editing critical configuration files 检查是否在编辑关键配置文件
+if echo "$CLAUDE_TOOL_PARAMS" | grep -q -E "(package\.json|requirements\.txt|Cargo\.toml|\.env)"; then
+    echo "⚠️  Editing critical configuration file - please ensure changes are documented"
+    echo "⚠️  正在编辑关键配置文件 - 请确保变更已记录在文档中"
+fi
+"""
+
+[[hooks]]
+event = "PreToolUse"
+[hooks.matcher]
+tool_name = "Write"
+command = """
+echo "📄 Pre-write validation... 写入前验证..."
+
+# Check if creating new files in important directories 检查是否在重要目录中创建新文件
+if echo "$CLAUDE_TOOL_PARAMS" | grep -q -E "(src/|lib/|tests?/|docs/)"; then
+    echo "ℹ️  Creating file in important directory - consider updating documentation"
+    echo "ℹ️  在重要目录中创建文件 - 请考虑更新相关文档"
+fi
+"""
