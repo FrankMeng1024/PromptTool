@@ -67,39 +67,28 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-orange-600 via-red-500 to-amber-500 min-h-screen" style="background: linear-gradient(135deg, #FF5722 0%, #FF7043 25%, #FF8A65 50%, #FFAB40 75%, #FFCC80 100%);">
+<body class="bg-white min-h-screen">
     <div id="app" class="container mx-auto px-4 py-8">
         <!-- Language Switcher Header -->
         <header class="mb-8">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 id="main-title" class="text-4xl font-bold text-white mb-2 flex items-center gap-3">
+                    <h1 id="main-title" class="text-4xl font-bold text-slate-800 mb-2 flex items-center gap-3">
                         <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M9 2V8H15V2H9ZM11 4H13V6H11V4ZM2 22H22V20H2V22ZM3 8.5C3 6.57 4.57 5 6.5 5S10 6.57 10 8.5 8.43 12 6.5 12 3 10.43 3 8.5ZM5 8.5C5 9.33 5.67 10 6.5 10S8 9.33 8 8.5 7.33 7 6.5 7 5 7.67 5 8.5ZM14 8.5C14 6.57 15.57 5 17.5 5S21 6.57 21 8.5 19.43 12 17.5 12 14 10.43 14 8.5ZM16 8.5C16 9.33 16.67 10 17.5 10S19 9.33 19 8.5 18.33 7 17.5 7 16 7.67 16 8.5ZM12 13C14.21 13 16 14.79 16 17S14.21 21 12 21 8 19.21 8 17 9.79 13 12 13ZM12 15C10.9 15 10 15.9 10 17S10.9 19 12 19 14 18.1 14 17 13.1 15 12 15Z"/>
                         </svg>
                         AI Project Generator
                     </h1>
-                    <p id="main-subtitle" class="text-gray-600">
+                    <p id="main-subtitle" class="text-slate-600">
                         Generate optimized documentation-driven prompts for Claude Code
                     </p>
                 </div>
-                <div class="language-switcher flex gap-2">
-                    <button onclick="switchLanguage('en')"
-                            class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all flex items-center gap-2"
-                            id="lang-en">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                        English
-                    </button>
-                    <button onclick="switchLanguage('zh-CN')"
-                            class="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all flex items-center gap-2"
-                            id="lang-zh">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-2V2c0-.55-.45-1-1-1s-1 .45-1 1v2H8V2c0-.55-.45-1-1-1s-1 .45-1 1v2H4c-1.1 0-2 .9-2 2 2h16c1.1 0 2-.9 2-2zm0 16H4V8h16v12z"/>
-                        </svg>
-                        简体中文
-                    </button>
+                <div class="language-switcher">
+                    <select id="interface-language" onchange="switchLanguage(this.value)"
+                            class="px-3 py-1.5 rounded-lg bg-white text-slate-700 border border-gray-300 hover:border-gray-400 transition-all focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <option value="en">🇺🇸 English</option>
+                        <option value="zh-CN">🇨🇳 中文</option>
+                    </select>
                 </div>
             </div>
             <!-- Progress Bar -->
@@ -394,10 +383,7 @@
 
                     <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 h-96 overflow-y-auto relative">
                         <pre id="prompt-preview" class="text-sm text-gray-700 whitespace-pre-wrap">
-<!-- Generated prompt will appear here -->
-<!-- 生成的提示将在这里显示 -->
 Click "Generate Prompt" to see your customized Claude Code prompt
-点击"生成提示"查看您定制的Claude Code提示
                         </pre>
                         <div id="loading-indicator" class="hidden absolute inset-0 flex items-center justify-center bg-white/90 rounded-lg">
                             <div class="text-gray-700 text-center">
@@ -576,15 +562,11 @@ Click "Generate Prompt" to see your customized Claude Code prompt
         }
 
         function updateLanguageUI() {
-            // Update active language button
-            document.querySelectorAll('.language-switcher button').forEach(btn => {
-                btn.classList.remove('bg-white/40');
-                btn.classList.add('bg-white/20');
-            });
-
-            const activeBtn = currentLang === 'en' ? document.getElementById('lang-en') : document.getElementById('lang-zh');
-            activeBtn.classList.remove('bg-white/20');
-            activeBtn.classList.add('bg-white/40');
+            // Update dropdown selection
+            const dropdown = document.getElementById('interface-language');
+            if (dropdown) {
+                dropdown.value = currentLang;
+            }
         }
 
         function updateTexts() {
@@ -721,7 +703,7 @@ Click "Generate Prompt" to see your customized Claude Code prompt
                     <svg class="w-5 h-5 animate-spin" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/>
                     </svg>
-                    <span>${currentLang === 'en' ? 'Generating...' : '正在生成...'}</span>
+                    <span>Generating...</span>
                 `;
 
                 // Show loading overlay
@@ -735,17 +717,11 @@ Click "Generate Prompt" to see your customized Claude Code prompt
                         updateStats(prompt);
 
                         // Success feedback
-                        showNotification(
-                            currentLang === 'en' ? '✅ Prompt generated successfully!' : '✅ 提示生成成功！',
-                            'success'
-                        );
+                        showNotification('Prompt generated successfully!', 'success');
 
                     } catch (error) {
                         console.error('Error generating prompt:', error);
-                        showNotification(
-                            currentLang === 'en' ? '❌ Error generating prompt' : '❌ 生成提示时出错',
-                            'error'
-                        );
+                        showNotification('Error generating prompt', 'error');
                     } finally {
                         // Always reset states
                         resetGenerateButton();
@@ -755,10 +731,7 @@ Click "Generate Prompt" to see your customized Claude Code prompt
             } catch (error) {
                 console.error('Error in generatePrompt:', error);
                 resetGenerateButton();
-                showNotification(
-                    currentLang === 'en' ? '❌ Error generating prompt' : '❌ 生成提示时出错',
-                    'error'
-                );
+                showNotification('Error generating prompt', 'error');
             }
         }
 
@@ -788,35 +761,44 @@ Click "Generate Prompt" to see your customized Claude Code prompt
             }
         }
 
-        // Simple translation function for common Chinese terms
+        // Enhanced translation function with auto-detection
         function translateToEnglish(text) {
             if (!text) return text;
 
+            // Detect if text contains Chinese characters
+            const hasChinese = /[\u4e00-\u9fff]/.test(text);
+            if (!hasChinese) return text;
+
             const translations = {
-                '项目': 'Project',
-                '网站': 'Website',
-                '应用': 'Application',
-                '系统': 'System',
-                '平台': 'Platform',
-                '工具': 'Tool',
-                '管理': 'Management',
-                '用户': 'User',
-                '数据': 'Data',
-                '分析': 'Analysis',
-                '电商': 'E-commerce',
-                '博客': 'Blog',
-                '论坛': 'Forum',
-                '社交': 'Social',
-                '教育': 'Education',
-                '学习': 'Learning',
-                '游戏': 'Game',
-                '音乐': 'Music',
-                '视频': 'Video',
-                '图片': 'Image',
-                '文件': 'File',
-                '聊天': 'Chat',
-                '消息': 'Message',
-                '通知': 'Notification'
+                // Common project terms
+                '项目': 'Project', '网站': 'Website', '应用': 'Application', '系统': 'System',
+                '平台': 'Platform', '工具': 'Tool', '管理': 'Management', '用户': 'User',
+                '数据': 'Data', '分析': 'Analysis', '电商': 'E-commerce', '博客': 'Blog',
+                '论坛': 'Forum', '社交': 'Social', '教育': 'Education', '学习': 'Learning',
+                '游戏': 'Game', '音乐': 'Music', '视频': 'Video', '图片': 'Image',
+                '文件': 'File', '聊天': 'Chat', '消息': 'Message', '通知': 'Notification',
+                // Technical terms
+                '开发': 'Development', '测试': 'Testing', '设计': 'Design', '优化': 'Optimization',
+                '安全': 'Security', '性能': 'Performance', '部署': 'Deployment', '监控': 'Monitoring',
+                '自动化': 'Automation', '集成': 'Integration', '框架': 'Framework', '库': 'Library',
+                '组件': 'Component', '模块': 'Module', '服务': 'Service', '接口': 'Interface',
+                // Action words
+                '创建': 'Create', '构建': 'Build', '实现': 'Implement', '维护': 'Maintain',
+                '更新': 'Update', '发布': 'Release', '配置': 'Configure', '部署': 'Deploy',
+                // Web and UI terms
+                '页面': 'page', '网页': 'webpage', '按钮': 'button', '效果': 'effect', '特效': 'effects',
+                '流星雨': 'meteor shower', '内容': 'content', '温馨': 'warm and cozy', '美观': 'beautiful',
+                '功能': 'functionality', '想象': 'imagination', '高级感': 'premium feel',
+                '希望': 'I hope to', '生成一个': 'generate a', '有流星雨特效的': 'with meteor shower effects',
+                '温馨舒适': 'warm and cozy', '美观的': 'beautiful', '不重要': 'not important',
+                '可以发挥': 'can use', '你的想象': 'your imagination', '我看重': 'I value',
+                '网页效果': 'webpage effect', '按钮希望': 'button with', '高级感': 'premium feel',
+                // Common phrases and grammar
+                '我希望': 'I hope', '我想要': 'I want', '我需要': 'I need', '帮我': 'Help me',
+                '请': 'Please', '可以': 'can', '不重要': 'not important', '发挥你的': 'use your',
+                '我看重': 'I value', '他的': 'its', '你的': 'your', '一个': 'a', '有': 'with',
+                '生成': 'generate', '做一个': 'make a', '建一个': 'build a', '开发一个': 'develop a',
+                '你好': 'Hello', '世界': 'World', '欢迎': 'Welcome', '的': '', '我': 'I'
             };
 
             let result = text;
@@ -996,7 +978,7 @@ Click "Generate Prompt" to see your customized Claude Code prompt
             const currentText = preview.textContent;
 
             // Only update if it's still showing the default message
-            if (currentText.includes('Click "Generate Prompt"') || currentText.includes('点击"生成提示"')) {
+            if (currentText.includes('Click "Generate Prompt"')) {
                 // Keep the default message
                 return;
             }
