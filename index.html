@@ -67,29 +67,38 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 min-h-screen">
+<body class="bg-gradient-to-br from-orange-800 via-red-800 to-amber-800 min-h-screen">
     <div id="app" class="container mx-auto px-4 py-8">
         <!-- Language Switcher Header -->
         <header class="mb-8">
             <div class="flex justify-between items-center">
                 <div>
-                    <h1 id="main-title" class="text-4xl font-bold text-white mb-2">
-                        🤖 AI Project Generator
+                    <h1 id="main-title" class="text-4xl font-bold text-white mb-2 flex items-center gap-3">
+                        <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 2V8H15V2H9ZM11 4H13V6H11V4ZM2 22H22V20H2V22ZM3 8.5C3 6.57 4.57 5 6.5 5S10 6.57 10 8.5 8.43 12 6.5 12 3 10.43 3 8.5ZM5 8.5C5 9.33 5.67 10 6.5 10S8 9.33 8 8.5 7.33 7 6.5 7 5 7.67 5 8.5ZM14 8.5C14 6.57 15.57 5 17.5 5S21 6.57 21 8.5 19.43 12 17.5 12 14 10.43 14 8.5ZM16 8.5C16 9.33 16.67 10 17.5 10S19 9.33 19 8.5 18.33 7 17.5 7 16 7.67 16 8.5ZM12 13C14.21 13 16 14.79 16 17S14.21 21 12 21 8 19.21 8 17 9.79 13 12 13ZM12 15C10.9 15 10 15.9 10 17S10.9 19 12 19 14 18.1 14 17 13.1 15 12 15Z"/>
+                        </svg>
+                        AI Project Generator
                     </h1>
-                    <p id="main-subtitle" class="text-blue-200">
+                    <p id="main-subtitle" class="text-orange-200">
                         Generate optimized documentation-driven prompts for Claude Code
                     </p>
                 </div>
                 <div class="language-switcher flex gap-2">
                     <button onclick="switchLanguage('en')"
-                            class="px-4 py-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-all"
+                            class="px-4 py-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-all flex items-center gap-2"
                             id="lang-en">
-                        🇺🇸 English
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        English
                     </button>
                     <button onclick="switchLanguage('zh-CN')"
-                            class="px-4 py-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-all"
+                            class="px-4 py-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-all flex items-center gap-2"
                             id="lang-zh">
-                        🇨🇳 简体中文
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-2V2c0-.55-.45-1-1-1s-1 .45-1 1v2H8V2c0-.55-.45-1-1-1s-1 .45-1 1v2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H4V8h16v12z"/>
+                        </svg>
+                        简体中文
                     </button>
                 </div>
             </div>
@@ -103,12 +112,16 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Configuration Panel (Left) -->
             <div class="lg:col-span-1">
-                <div class="glass-effect rounded-xl p-6 text-white">
+                <div class="glass-effect rounded-xl p-6 text-white h-[80vh] flex flex-col">
                     <h2 id="config-title" class="text-xl font-semibold mb-6 flex items-center gap-2">
-                        ⚙️ <span data-i18n="configTitle">Project Configuration</span>
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                        </svg>
+                        <span data-i18n="configTitle">Project Configuration</span>
                     </h2>
 
                     <!-- Configuration Form -->
+                    <div class="flex-1 overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent;">
                     <form id="project-form" class="space-y-6">
                         <!-- Project Mode Section -->
                         <div class="form-section">
@@ -332,11 +345,15 @@
 
                         <!-- Generate Button -->
                         <button type="button" onclick="generatePrompt()"
-                                class="w-full py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105 flex items-center justify-center gap-2">
-                            <span>🚀</span>
+                                id="generate-btn"
+                                class="w-full py-4 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-lg font-semibold hover:from-orange-600 hover:to-red-700 transition-all transform hover:scale-105 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M2.81 2.81L1.39 4.22l2.27 2.27C2.61 8.07 2 9.96 2 12c0 5.52 4.48 10 10 10 2.04 0 3.93-.61 5.51-1.66l2.27 2.27 1.41-1.41L2.81 2.81zM12 20c-4.41 0-8-3.59-8-8 0-1.48.41-2.86 1.12-4.06l10.94 10.94C14.86 19.59 13.48 20 12 20zM7.94 5.12L6.49 3.66C8.07 2.61 9.96 2 12 2c5.52 0 10 4.48 10 10 0 2.04-.61 3.93-1.66 5.51l-1.45-1.45C19.59 14.86 20 13.48 20 12c0-4.41-3.59-8-8-8-1.48 0-2.86.41-4.06 1.12z"/>
+                            </svg>
                             <span data-i18n="generatePrompt">Generate Prompt</span>
                         </button>
                     </form>
+                    </div>
                 </div>
             </div>
 
@@ -345,29 +362,38 @@
                 <div class="glass-effect rounded-xl p-6 text-white h-full">
                     <div class="flex justify-between items-center mb-6">
                         <h2 id="preview-title" class="text-xl font-semibold flex items-center gap-2">
-                            📋 <span data-i18n="previewTitle">Generated Prompt Preview</span>
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                            </svg>
+                            <span data-i18n="previewTitle">Generated Prompt Preview</span>
                         </h2>
                         <div class="flex gap-2">
                             <button onclick="copyPrompt()"
                                     class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-all flex items-center gap-2">
-                                <span>📋</span>
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                </svg>
                                 <span data-i18n="copyToClipboard">Copy to Clipboard</span>
                             </button>
                             <button onclick="downloadConfig()"
                                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-all flex items-center gap-2">
-                                <span>💾</span>
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                                </svg>
                                 <span data-i18n="downloadConfig">Download Config</span>
                             </button>
                             <button onclick="generateProject()"
                                     class="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-all flex items-center gap-2">
-                                <span>🏗️</span>
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                </svg>
                                 <span data-i18n="generateProject">Generate Project</span>
                             </button>
                         </div>
                     </div>
 
                     <div class="bg-black/30 rounded-lg p-4 h-96 overflow-y-auto relative">
-                        <pre id="prompt-preview" class="text-sm text-blue-100 whitespace-pre-wrap">
+                        <pre id="prompt-preview" class="text-sm text-orange-100 whitespace-pre-wrap">
 <!-- Generated prompt will appear here -->
 <!-- 生成的提示将在这里显示 -->
 Click "Generate Prompt" to see your customized Claude Code prompt
@@ -382,7 +408,7 @@ Click "Generate Prompt" to see your customized Claude Code prompt
                     </div>
 
                     <!-- Stats Bar -->
-                    <div class="mt-4 flex justify-between text-sm text-blue-200">
+                    <div class="mt-4 flex justify-between text-sm text-orange-200">
                         <span data-i18n="characters">Characters: <span id="char-count">0</span></span>
                         <span data-i18n="estimatedTokens">Estimated Tokens: <span id="token-count">0</span></span>
                         <span data-i18n="qualityScore">Quality Score: <span id="quality-score">-</span>/100</span>
@@ -675,17 +701,47 @@ Click "Generate Prompt" to see your customized Claude Code prompt
 
         // Prompt generation
         function generatePrompt() {
+            const generateBtn = document.getElementById('generate-btn');
+
+            // Disable button during generation
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = `
+                <svg class="w-5 h-5 animate-spin" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/>
+                </svg>
+                <span>Generating...</span>
+            `;
+
             showLoading(true);
 
             // Simulate generation delay for better UX
             setTimeout(() => {
+                updateConfig(); // Ensure config is up to date
                 const prompt = buildPrompt(projectConfig, currentLang);
                 document.getElementById('prompt-preview').textContent = prompt;
                 updateStats(prompt);
                 showLoading(false);
 
+                // Re-enable button with original content
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = `
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M2.81 2.81L1.39 4.22l2.27 2.27C2.61 8.07 2 9.96 2 12c0 5.52 4.48 10 10 10 2.04 0 3.93-.61 5.51-1.66l2.27 2.27 1.41-1.41L2.81 2.81zM12 20c-4.41 0-8-3.59-8-8 0-1.48.41-2.86 1.12-4.06l10.94 10.94C14.86 19.59 13.48 20 12 20zM7.94 5.12L6.49 3.66C8.07 2.61 9.96 2 12 2c5.52 0 10 4.48 10 10 0 2.04-.61 3.93-1.66 5.51l-1.45-1.45C19.59 14.86 20 13.48 20 12c0-4.41-3.59-8-8-8-1.48 0-2.86.41-4.06 1.12z"/>
+                    </svg>
+                    <span data-i18n="generatePrompt">Generate Prompt</span>
+                `;
+
+                // Update button text based on current language
+                const buttonText = generateBtn.querySelector('[data-i18n="generatePrompt"]');
+                if (buttonText) {
+                    buttonText.textContent = i18n[currentLang].ui.generatePrompt;
+                }
+
                 // Show success notification
-                showNotification(i18n[currentLang].ui.copied, 'success');
+                showNotification(
+                    currentLang === 'en' ? 'Prompt generated successfully!' : '提示生成成功！',
+                    'success'
+                );
             }, 1000);
         }
 
@@ -849,13 +905,16 @@ Click "Generate Prompt" to see your customized Claude Code prompt
         }
 
         function updatePreview() {
-            // Auto-update preview as user types (debounced)
-            clearTimeout(window.previewTimeout);
-            window.previewTimeout = setTimeout(() => {
-                if (projectConfig.name || projectConfig.description || projectConfig.selectedDocs.length > 0) {
-                    generatePrompt();
-                }
-            }, 500);
+            // Remove auto-update to prevent always showing generating state
+            // Users now need to manually click Generate Prompt button
+            const preview = document.getElementById('prompt-preview');
+            const currentText = preview.textContent;
+
+            // Only update if it's still showing the default message
+            if (currentText.includes('Click "Generate Prompt"') || currentText.includes('点击"生成提示"')) {
+                // Keep the default message
+                return;
+            }
         }
 
         function updateStats(text) {
